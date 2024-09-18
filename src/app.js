@@ -150,3 +150,134 @@ const createDatabaseAndTables = async () => {
 };
 
 createDatabaseAndTables();
+
+// CRUD Operations
+const createClient = async () => {
+    const newClientConfig = {
+      ...defaultClientConfig,
+      database: dbName,
+    };
+    const client = new Client(newClientConfig);
+    await client.connect();
+    return client;
+  };
+  
+  // Create Director
+  const createDirector = async (name, nationality, dob) => {
+    const client = await createClient();
+    try {
+      const query = 'INSERT INTO Directors (Name, Nationality, DOB) VALUES ($1, $2, $3) RETURNING *';
+      const values = [name, nationality, dob];
+      const res = await client.query(query, values);
+      console.log('New Director Added:', res.rows[0]);
+    } catch (error) {
+      console.error('Error creating director:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  createDirector('Christopher Nolan', 'British-American', '1970-07-30');
+  // Read Directors
+  const getDirectors = async () => {
+    const client = await createClient();
+    try {
+      const query = 'SELECT * FROM Directors';
+      const res = await client.query(query);
+      return res.rows;
+    } catch (error) {
+      console.error('Error reading directors:', error);
+    } finally {
+      await client.end();
+    }
+  };
+
+  getDirectors();
+  
+  // Update Director
+  const updateDirector = async (id, name, nationality, dob) => {
+    const client = await createClient();
+    try {
+      const query = 'UPDATE Directors SET Name = $1, Nationality = $2, DOB = $3 WHERE DirectorID = $4 RETURNING *';
+      const values = [name, nationality, dob, id];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (error) {
+      console.error('Error updating director:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  
+  // Delete Director
+  const deleteDirector = async (id) => {
+    const client = await createClient();
+    try {
+      const query = 'DELETE FROM Directors WHERE DirectorID = $1 RETURNING *';
+      const values = [id];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (error) {
+      console.error('Error deleting director:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  
+  // Create Actor
+  const createActor = async (name, nationality, dob) => {
+    const client = await createClient();
+    try {
+      const query = 'INSERT INTO Actors (Name, Nationality, DOB) VALUES ($1, $2, $3) RETURNING *';
+      const values = [name, nationality, dob];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (error) {
+      console.error('Error creating actor:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  
+  // Read Actors
+  const getActors = async () => {
+    const client = await createClient();
+    try {
+      const query = 'SELECT * FROM Actors';
+      const res = await client.query(query);
+      return res.rows;
+    } catch (error) {
+      console.error('Error reading actors:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  
+  // Update Actor
+  const updateActor = async (id, name, nationality, dob) => {
+    const client = await createClient();
+    try {
+      const query = 'UPDATE Actors SET Name = $1, Nationality = $2, DOB = $3 WHERE ActorID = $4 RETURNING *';
+      const values = [name, nationality, dob, id];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (error) {
+      console.error('Error updating actor:', error);
+    } finally {
+      await client.end();
+    }
+  };
+  
+  // Delete Actor
+  const deleteActor = async (id) => {
+    const client = await createClient();
+    try {
+      const query = 'DELETE FROM Actors WHERE ActorID = $1 RETURNING *';
+      const values = [id];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (error) {
+      console.error('Error deleting actor:', error);
+    } finally {
+      await client.end();
+    }
+  };
